@@ -1,0 +1,13 @@
+Test project for Flask learning
+Building a small 'blog' app with a test suit -- referenced Flask documentation for starting project
+Uses an sqlite3 database to store user data
+
+HOW TO RUN:
+clone repository
+create a virtual environment (venv) at the root level
+install flask package
+install pytest package
+in the console run: >> flask run
+
+the application will be available at the specified address in the console output
+
