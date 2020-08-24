@@ -60,10 +60,20 @@ def get_post(id, check_author=True):
 
     return post
 
+def get_comments(post_id):
+    comments = get_db().execute(
+        'SELECT c.id, c.post_id,  body, created, author_id, username'
+        ' FROM comment c JOIN user u on c.author_id = u.id'
+        ' WHERE c.post_id = ?',
+        (post_id,)
+    ).fetchall()
+    return comments
+
 @bp.route('/<int:id>', methods=('GET',))
 def post(id):
     post = get_post(id)
-    return render_template('blog/post.html', post=post)
+    comments = get_comments(id)
+    return render_template('blog/post.html', post=post, comments=comments)
 
 @bp.route('/<int:id>/update', methods=('GET', 'POST'))
 @login_required
