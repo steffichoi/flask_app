@@ -25,15 +25,10 @@
     </article>
     {% if g.user['id'] == post['author_id'] %}
         <a class="action" href="{{ url_for('blog.update', id=post['id']) }}">Edit</a>
-    {% endif %}  
+    {% endif %} 
+
     <div>
         <h2>Comments</h2>
-        <form method="post">
-            <label for="comment">Comment</label>
-            <textarea name="comment" id="comment">{{ request.form['comment'] or post['comment'] }}</textarea>
-            <input type="submit" value="Save">
-        </form>
-
         {% for comment in comments %}
             <article class="comment">
                 <header>
@@ -45,10 +40,22 @@
                 {% endif %} -->
                 </header>
                 <p class="body">{{ comment['body'] }}</p>
+
+                {% if g.user['id'] == comment['author_id'] %}
+                    <form action="{{ url_for('blog.delete_comment', id=comment['id'], post_id=post['id']) }}" method="post">
+                        <input class="danger" type="submit" value="Delete" onclick="return confirm('Are you sure?');">
+                    </form>
+                {% endif %} 
             </article>
             {% if not loop.last %}
                 <hr>
             {% endif %}
         {% endfor %}
+
+        <form method="post" class="comment-form">
+            <label for="comment">Add Comment</label>
+            <textarea class="comment" name="comment" id="comment">{{ request.form['comment'] or post['comment'] }}</textarea>
+            <input type="submit" value="Save">
+        </form>
     </div>
 {% endblock %}

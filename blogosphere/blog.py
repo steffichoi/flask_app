@@ -137,3 +137,11 @@ def add_comment(id):
             return redirect(request.url)
 
     return render_template('blog/post.html', post=post)
+
+@bp.route('/<int:post_id>/delete_comment/<int:id>', methods=('POST', ))
+@login_required
+def delete_comment(id, post_id):
+    db = get_db()
+    db.execute('DELETE FROM comment WHERE id = ?', (id,))
+    db.commit()
+    return redirect(url_for('blog.post', id=post_id))
