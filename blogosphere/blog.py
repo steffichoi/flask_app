@@ -110,3 +110,30 @@ def delete(id):
     db.execute('DELETE FROM post WHERE id = ?', (id,))
     db.commit()
     return redirect(url_for('blog.index'))
+
+
+@bp.route('/<int:id>', methods=('GET', 'POST'))
+@login_required
+def add_comment(id):
+    post = get_post(id)
+
+    if request.method == 'POST':
+        comment = request.form['comment']
+        error = None
+
+        if not comment:
+            error = 'Comment content is required.'
+
+        if error is not None:
+            flash(error)
+        else:
+            db = get_db()
+            db.execute(
+                'INSERT INTO comment (post_id, author_id, body)'
+                'VALUES(?, ?, ?)',
+                (id, g.user['id'], comment)
+            )
+            db.commit()
+            return redirect(request.url)
+
+    return render_template('blog/post.html', post=post)
